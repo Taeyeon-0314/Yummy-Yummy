@@ -10,11 +10,14 @@ const Margin = styled.div`
 `;
 
 const AddRecipeButton = () => {
-  const { addRecipeGroup } = useContext(WriteContext);
+  const { handleAddRecipeGroup } = useContext(WriteContext);
   return (
     <>
       <Margin>
-        <Button fontsize="1.4rem" onClick={addRecipeGroup}>
+
+        <Button fontsize="1.4rem" onClick={handleAddRecipeGroup} color="beige">
+
+      
           순서 추가
         </Button>
       </Margin>

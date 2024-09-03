@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import supabase from "../../../base-camp/supabaseClient";
+import supabase from "../../../supabaseClient";
+import Title from "../../components/Title";
 import Button from "../../components/Button";
+import Input from "../../components/Input";
 import ProfileImage from "../../components/ProfileImage";
 import ButtonGroup from "./ButtonGroup";
-import Input from "./Input";
 import Textarea from "./Textarea";
-import MyPageTitle from "./MyPageTitle";
 
 const ProfileImageWrap = styled.div`
   display: flex;
@@ -22,33 +22,10 @@ const TextareaWrap = styled.div`
 `;
 
 const MyPageProfile = () => {
-  const [password, setPassword] = useState("");
-  const [passwordErrorText, setPasswordErrorText] = useState("");
-  const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
   const [introduction, setIntroduction] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState("");
   const fileInputRef = useRef(null);
-
-  // 비밀번호 확인
-  const handleConfirmPassword = async () => {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: user.email, // 현재 로그인된 사용자의 이메일을 사용
-      password
-    });
-
-    if (error) {
-      setPasswordErrorText("비밀번호가 일치하지 않습니다.");
-      setIsPasswordConfirm(false);
-    } else {
-      setPasswordErrorText("");
-      setIsPasswordConfirm(true);
-    }
-  };
 
   // 파일 확장자 가져오는 함수
   function getFileExtension(fileName) {
@@ -140,46 +117,26 @@ const MyPageProfile = () => {
 
   return (
     <>
-      <MyPageTitle>프로필 수정</MyPageTitle>
-
-      {isPasswordConfirm ? (
-        <>
-          <ProfileImageWrap>
-            <ProfileImage src={imagePreview} />
-            <Input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              hint="1:1 비율의 이미지를 올려주세요."
-              className="input-wrap"
-              onChange={handleChangeImageUrl}
-            />
-          </ProfileImageWrap>
-          <TextareaWrap>
-            <Textarea value={introduction} placeholder="소개글을 입력해주세요." onChange={handleChangeIntroduction} />
-          </TextareaWrap>
-          <ButtonGroup>
-            <Button height="50px" onClick={handleSaveProfile}>
-              확인
-            </Button>
-          </ButtonGroup>
-        </>
-      ) : (
-        <>
-          <Input
-            type="password"
-            placeholder="비밀번호 확인이 필요합니다."
-            hint={passwordErrorText}
-            hintColor="red"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <ButtonGroup>
-            <Button height="50px" onClick={handleConfirmPassword}>
-              확인
-            </Button>
-          </ButtonGroup>
-        </>
-      )}
+      <Title>프로필 수정</Title>
+      <ProfileImageWrap>
+        <ProfileImage src={imagePreview} />
+        <Input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          hint="1:1 비율의 이미지를 올려주세요."
+          className="input-wrap"
+          onChange={handleChangeImageUrl}
+        />
+      </ProfileImageWrap>
+      <TextareaWrap>
+        <Textarea value={introduction} placeholder="소개글을 입력해주세요." onChange={handleChangeIntroduction} />
+      </TextareaWrap>
+      <ButtonGroup>
+        <Button height="50px" onClick={handleSaveProfile}>
+          확인
+        </Button>
+      </ButtonGroup>
     </>
   );
 };
